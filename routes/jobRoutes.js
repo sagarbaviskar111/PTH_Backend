@@ -2,34 +2,27 @@
 const express = require('express');
 const { createJob, getJobs, deleteJob, updateJob, getJobById } = require('../controllers/jobController');
 const authenticateToken = require('../middleware/authMiddleware');
-const { jobValidationRules } = require('../utils/validators');
-const validate = require('../middleware/validate');
-const validateJob = require('../utils/jobValidator');
-const multer = require('multer');
+const { validateJobCreate, validateJobUpdate } = require('../utils/jobValidator');
+const upload = require('../middleware/fileUpload');
 
 const router = express.Router();
 
+// Use the shared multer upload instance and specify fields per-route
+const uploadFields = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 1 }]);
 
+// Create job (image and logo expected)
+router.post('/', uploadFields, validateJobCreate, createJob);
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, './uploads/'); // Define the folder to temporarily store files
-    },
-    filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`); // Generate unique file name
-    },
-  });
-  
-const upload = multer({ storage }).fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 1 }]);
-  
-router.post('/', upload, validateJob, createJob);
-
+// List/search jobs
 router.get('/', getJobs);
 
-router.put('/:id', authenticateToken, upload, updateJob);
+// Update job (protected)
+router.put('/:id', authenticateToken, uploadFields, validateJobUpdate, updateJob);
 
+// Get single job
 router.get('/:id', getJobById);
 
-router.delete('/:id' ,authenticateToken, deleteJob);
+// Delete job (protected)
+router.delete('/:id', authenticateToken, deleteJob);
 
 module.exports = router;

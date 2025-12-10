@@ -14,6 +14,8 @@ const jobSchema = new mongoose.Schema({
     companyOverview: { type: String, required: false },
     imageUrl: { type: String, required: false },
     logo: { type: String, required: false }, // Company logo
+    imagePublicId: { type: String, required: false },
+    logoPublicId: { type: String, required: false },
     tags: { type: String, required: false }, // Tags (e.g., #remote, #developer)
     applylink: { type: String, required: false },
     department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department' },
