@@ -12,7 +12,10 @@ const app = express();
 
 connectDB();
 
-app.use(express.json());
+// Allow larger JSON/urlencoded payloads (use env override if needed)
+const BODY_LIMIT = process.env.BODY_LIMIT || '10mb';
+app.use(express.json({ limit: BODY_LIMIT }));
+app.use(express.urlencoded({ limit: BODY_LIMIT, extended: true }));
 app.use('/uploads', express.static('uploads'));
 
 app.use(cors({
