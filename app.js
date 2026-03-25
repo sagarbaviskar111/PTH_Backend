@@ -6,7 +6,10 @@ const cors = require('cors');
 const jobRoutes = require('./routes/jobRoutes');
 const authRoutes = require('./routes/authRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
-const newsRoutes = require('./routes/newsRoutes')
+const newsRoutes = require('./routes/newsRoutes');
+const admissionOpenRoutes = require('./routes/admissionOpenRoutes');
+const eventBannerRoutes = require('./routes/eventBannerRoutes');
+const studentsImgRoutes = require('./routes/studentsImgRoutes');
 
 const app = express();
 
@@ -27,6 +30,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/news', newsRoutes); // Add this line
+app.use('/api/admissionopen', admissionOpenRoutes);
+app.use('/api/eventbanner', eventBannerRoutes);
+app.use('/api/studentsimg', studentsImgRoutes);
 
 
 const PORT = process.env.PORT || 5000;

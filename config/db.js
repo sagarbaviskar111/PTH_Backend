@@ -9,8 +9,8 @@ const connectDB = async () => {
     });
     console.log('MongoDB Connected');
   } catch (err) {
-    console.error(err.message);
-    process.exit(1);
+    console.error('Failed to connect to MongoDB. Ensure your connection string or local MongoDB instance is active. Detailed error:', err.message);
+    // Removed process.exit(1) to prevent nodemon crash loop
   }
 };
 
