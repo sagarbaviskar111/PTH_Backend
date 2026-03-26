@@ -10,6 +10,7 @@ const newsRoutes = require('./routes/newsRoutes');
 const admissionOpenRoutes = require('./routes/admissionOpenRoutes');
 const eventBannerRoutes = require('./routes/eventBannerRoutes');
 const studentsImgRoutes = require('./routes/studentsImgRoutes');
+const courseRoutes = require('./routes/courseRoutes');
 
 const app = express();
 
@@ -33,7 +34,7 @@ app.use('/api/news', newsRoutes); // Add this line
 app.use('/api/admissionopen', admissionOpenRoutes);
 app.use('/api/eventbanner', eventBannerRoutes);
 app.use('/api/studentsimg', studentsImgRoutes);
-
+app.use('/api/courses', courseRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

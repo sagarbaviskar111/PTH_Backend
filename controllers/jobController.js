@@ -33,8 +33,22 @@ const uploadImageAndLogo = (file, folder) => {
       const logoUpload = await uploadImageAndLogo(logo[0], 'job_logos');
 console.log(req.body)  
 
+      let parsedQuestions = [];
+      if (req.body.commonInterviewQuestions) {
+        if (typeof req.body.commonInterviewQuestions === 'string') {
+          try {
+            parsedQuestions = JSON.parse(req.body.commonInterviewQuestions);
+          } catch (e) {
+            console.error('Error parsing commonInterviewQuestions:', e);
+          }
+        } else {
+          parsedQuestions = req.body.commonInterviewQuestions;
+        }
+      }
+
       const jobData = {
         ...req.body,
+        commonInterviewQuestions: parsedQuestions,
         imageUrl: imageUpload.secure_url,
         logo: logoUpload.secure_url,
       };
@@ -98,6 +112,16 @@ const updateJob = async (req, res) => {
       const existingJob = await Job.findById(id);
       if (!existingJob) {
         return res.status(404).json({ error: 'Job not found' });
+      }
+  
+      if (req.body.commonInterviewQuestions) {
+        if (typeof req.body.commonInterviewQuestions === 'string') {
+          try {
+            req.body.commonInterviewQuestions = JSON.parse(req.body.commonInterviewQuestions);
+          } catch (e) {
+            console.error('Error parsing commonInterviewQuestions:', e);
+          }
+        }
       }
   
       const updatedData = { ...existingJob.toObject(), ...req.body };

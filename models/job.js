@@ -23,6 +23,10 @@ const jobSchema = new mongoose.Schema({
     driveTime: { type: String, required: false },
     driveContactPerson: { type: String, required: false },
     driveContactNumber: { type: String, required: false },
+    commonInterviewQuestions: [{
+        question: { type: String, required: false },
+        answer: { type: String, required: false }
+    }]
 }, { timestamps: true });
 
 const Job = mongoose.model('Job', jobSchema);
