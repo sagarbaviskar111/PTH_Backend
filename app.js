@@ -1,7 +1,7 @@
 // app.js
+require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
-require('dotenv').config();
 const cors = require('cors');
 const jobRoutes = require('./routes/jobRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -37,6 +37,6 @@ app.use('/api/studentsimg', studentsImgRoutes);
 app.use('/api/courses', courseRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
