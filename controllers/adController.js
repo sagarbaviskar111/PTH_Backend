@@ -11,7 +11,7 @@ exports.getAds = async (req, res) => {
 
 exports.createAd = async (req, res) => {
   try {
-    const { title, description, placement, link, imageUrl } = req.body;
+    const { title, description, placement, link, imageUrl, isActive } = req.body;
 
     if (!placement || !['popup', 'inline'].includes(placement)) {
       return res.status(400).json({ message: 'A valid placement (popup or inline) is required' });
@@ -23,12 +23,43 @@ exports.createAd = async (req, res) => {
       placement,
       link,
       imageUrl,
-      isActive: true,
+      isActive: typeof isActive === 'boolean' ? isActive : true,
     });
 
     res.status(201).json({ message: 'Ad created', data: { ...ad.toObject(), id: ad._id.toString() } });
   } catch (error) {
     res.status(500).json({ message: 'Error creating ad', error: error.message });
+  }
+};
+
+exports.updateAd = async (req, res) => {
+  try {
+    const { id, title, description, placement, link, imageUrl, isActive } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'Ad id is required' });
+    }
+
+    if (placement && !['popup', 'inline'].includes(placement)) {
+      return res.status(400).json({ message: 'A valid placement (popup or inline) is required' });
+    }
+
+    const update = {};
+    if (title !== undefined) update.title = title;
+    if (description !== undefined) update.description = description;
+    if (placement !== undefined) update.placement = placement;
+    if (link !== undefined) update.link = link;
+    if (imageUrl !== undefined) update.imageUrl = imageUrl;
+    if (typeof isActive === 'boolean') update.isActive = isActive;
+
+    const ad = await Ad.findByIdAndUpdate(id, update, { new: true, runValidators: true });
+    if (!ad) {
+      return res.status(404).json({ message: 'Ad not found' });
+    }
+
+    res.status(200).json({ message: 'Ad updated', data: { ...ad.toObject(), id: ad._id.toString() } });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating ad', error: error.message });
   }
 };
 

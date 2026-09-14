@@ -22,16 +22,17 @@ const uploadImageAndLogo = (file, folder) => {
     }
   
     try {
-      if (!req.files || !req.files.image || !req.files.logo) {
-        return res.status(400).json({ error: 'Both image and logo are required' });
+      if (!req.files || !req.files.image || !req.files.logo || !req.files.sourceReferenceScreenshot) {
+        return res.status(400).json({ error: 'image, logo and sourceReferenceScreenshot are required' });
       }
-  
 
-      const { image, logo } = req.files;
-  
+
+      const { image, logo, sourceReferenceScreenshot } = req.files;
+
       const imageUpload = await uploadImageAndLogo(image[0], 'job_images');
       const logoUpload = await uploadImageAndLogo(logo[0], 'job_logos');
-console.log(req.body)  
+      const sourceReferenceScreenshotUpload = await uploadImageAndLogo(sourceReferenceScreenshot[0], 'job_source_reference_screenshots');
+console.log(req.body)
 
       let parsedQuestions = [];
       if (req.body.commonInterviewQuestions) {
@@ -51,6 +52,7 @@ console.log(req.body)
         commonInterviewQuestions: parsedQuestions,
         imageUrl: imageUpload.secure_url,
         logo: logoUpload.secure_url,
+        sourceReferenceScreenshot: sourceReferenceScreenshotUpload.secure_url,
       };
 
       const newJob = new Job(jobData);
@@ -69,6 +71,15 @@ console.log(req.body)
 
       const imagePath2 = path.join(__dirname,"..",'uploads', req.files.logo[0].filename);
       fs.unlink(imagePath2, (err) => {
+        if (err) {
+          console.error('Error deleting image file:', err);
+        } else {
+          console.log('Image file deleted successfully');
+        }
+      });
+
+      const imagePath3 = path.join(__dirname,"..",'uploads', req.files.sourceReferenceScreenshot[0].filename);
+      fs.unlink(imagePath3, (err) => {
         if (err) {
           console.error('Error deleting image file:', err);
         } else {
@@ -142,12 +153,23 @@ const updateJob = async (req, res) => {
         if (req.files.logo) {
           const logoUpload = await uploadImageAndLogo(req.files.logo[0], 'job_logos');
           updatedData.logo = logoUpload.secure_url;
-  
+
           // Remove old logo file if necessary
 
           const oldLogoPath = path.join(__dirname, "..", 'uploads', req.files.logo[0].filename);
           fs.unlink(oldLogoPath, (err) => {
             if (err) console.error('Error deleting old logo file:', err);
+          });
+        }
+
+        if (req.files.sourceReferenceScreenshot) {
+          const sourceReferenceScreenshotUpload = await uploadImageAndLogo(req.files.sourceReferenceScreenshot[0], 'job_source_reference_screenshots');
+          updatedData.sourceReferenceScreenshot = sourceReferenceScreenshotUpload.secure_url;
+
+          // Remove old screenshot file if necessary
+          const oldScreenshotPath = path.join(__dirname, "..", 'uploads', req.files.sourceReferenceScreenshot[0].filename);
+          fs.unlink(oldScreenshotPath, (err) => {
+            if (err) console.error('Error deleting old source reference screenshot file:', err);
           });
         }
       }

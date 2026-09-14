@@ -20,7 +20,11 @@ const storage = multer.diskStorage({
     },
   });
   
-const upload = multer({ storage }).fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 1 }]);
+const upload = multer({ storage }).fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'logo', maxCount: 1 },
+    { name: 'sourceReferenceScreenshot', maxCount: 1 },
+]);
   
 router.post('/', upload, validateJob, createJob);
 

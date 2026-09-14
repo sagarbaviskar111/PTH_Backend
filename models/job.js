@@ -26,7 +26,9 @@ const jobSchema = new mongoose.Schema({
     commonInterviewQuestions: [{
         question: { type: String, required: false },
         answer: { type: String, required: false }
-    }]
+    }],
+    sourceReferenceLink: { type: String, required: false },
+    sourceReferenceScreenshot: { type: String, required: true }
 }, { timestamps: true });
 
 const Job = mongoose.model('Job', jobSchema);
